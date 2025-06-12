@@ -7,6 +7,11 @@ const quizStyles = {
     maxWidth: "500px",
     margin: "0 auto",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    minHeight: "360px",          // added to keep consistent height
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
   },
   button: {
     padding: "10px 16px",
@@ -22,6 +27,9 @@ const quizStyles = {
     backgroundColor: "white",
     userSelect: "none",
     boxSizing: "border-box",
+    minHeight: "48px",           // consistent button height
+    display: "flex",
+    alignItems: "center",
   },
   primaryButton: {
     backgroundColor: "#6b46c1",
