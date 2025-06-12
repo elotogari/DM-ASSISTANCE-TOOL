@@ -33,7 +33,6 @@ const secondaryButtonStyle = {
   marginTop: "15px",
 };
 
-// Define multiple scenarios
 const scenarios = [
   [
     {
@@ -47,7 +46,7 @@ const scenarios = [
         },
         {
           text: "Take the dark path",
-          feedback: "The dark path is risky.",
+          feedback: "Goblins lurk along the dark path, enter combat.",
           nextStep: 3,
         },
       ],
@@ -74,12 +73,12 @@ const scenarios = [
       choices: [
         {
           text: "Pick the lock",
-          feedback: "You get magical items.",
+          feedback: "It was a mimic, enter combat!",
           nextStep: null,
         },
         {
           text: "Leave it",
-          feedback: "You avoid traps.",
+          feedback: "You avoid the mimic trap.",
           nextStep: null,
         },
       ],
@@ -97,7 +96,7 @@ const scenarios = [
         },
         {
           text: "Take the right path",
-          feedback: "You encounter a wild beast.",
+          feedback: "You encounter a wild beast, enter combat.",
           nextStep: null,
         },
       ],
@@ -149,7 +148,6 @@ const ScenarioWalkthrough = ({ onComplete, onCancel, xpReward = 50 }) => {
       setShowFeedback(false);
       setScenarioComplete(false);
     } else {
-      // No more scenarios, call onComplete with total XP (could multiply by scenarios count or just xpReward)
       onComplete(xpReward * scenarios.length);
     }
   };
