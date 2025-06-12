@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import Home from "./components/Home";
 import XPTracker from "./components/XPTracker";
 import ModuleCard from "./components/ModuleCard";
-import Quiz from "./components/shared/Quiz"; // ✅ New unified quiz component
-import decisionQuestions from "./data/decisionQuestions"; // ✅ Question data
-import rulesQuestions from "./data/rulesQuestions"; // ✅ Question data
+import Quiz from "./components/shared/Quiz";
+import decisionQuestions from "./data/decisionQuestions";
+import rulesQuestions from "./data/rulesQuestions";
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -57,18 +57,13 @@ function App() {
     (Object.keys(completedModules).filter((key) => completedModules[key]).length / modules.length) * 100
   );
 
-  // <-- HERE is the console log
-  console.log("Started:", started, "Active Module:", activeModule);
-
   if (!started) {
     return <Home onStart={() => setStarted(true)} />;
   }
 
-  // ✅ Render quiz modules using unified <Quiz />
   if (activeModule === "rules" || activeModule === "decision-making") {
     const moduleData = modules.find((m) => m.key === activeModule);
-    const questions =
-      activeModule === "rules" ? rulesQuestions : decisionQuestions;
+    const questions = activeModule === "rules" ? rulesQuestions : decisionQuestions;
 
     return (
       <div style={{ padding: "20px", backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
@@ -83,15 +78,14 @@ function App() {
     );
   }
 
-  // Placeholder for non-quiz modules
   if (activeModule) {
+    const moduleData = modules.find((m) => m.key === activeModule);
+
     return (
       <div style={{ padding: "20px" }}>
-        <h2>{modules.find((m) => m.key === activeModule).title}</h2>
+        <h2>{moduleData.title}</h2>
         <p>This module is under construction.</p>
-        <button
-          onClick={() => handleCompleteModule(activeModule, modules.find((m) => m.key === activeModule).xp)}
-        >
+        <button onClick={() => handleCompleteModule(activeModule, moduleData.xp)}>
           Mark as Complete
         </button>
         <button onClick={() => setActiveModule(null)} style={{ marginLeft: 10 }}>
@@ -101,7 +95,6 @@ function App() {
     );
   }
 
-  // Main dashboard
   return (
     <div style={{ padding: "20px" }}>
       <h2>Module Dashboard</h2>
@@ -113,13 +106,17 @@ function App() {
             style={{
               width: `${progress}%`,
               background: "#6b46c1",
-              color: "white",
+              color: "black",
               padding: "6px 0",
               textAlign: "center",
               transition: "width 0.4s ease",
+              fontWeight: "bold",
+              boxShadow: "inset 0 1px 3px rgba(0,0,0,0.3)",
             }}
           >
-            {progress}% Complete
+            <span style={{ whiteSpace: "nowrap" }}>
+              {progress}% Complete
+            </span>
           </div>
         </div>
       </div>
