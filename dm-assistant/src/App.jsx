@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import XPTracker from "./components/XPTracker";
 import ModuleCard from "./components/ModuleCard";
 import DecisionQuiz from "./components/DecisionQuiz";
+import RulesQuiz from "./components/RulesQuiz";  // <- Import RulesQuiz here
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -48,7 +49,7 @@ function App() {
       setCompletedModules((prev) => ({ ...prev, [key]: true }));
       setXp((prev) => prev + xpGained);
     }
-    setActiveModule(null); // close active module after completion
+    setActiveModule(null);
   };
 
   const progress = Math.round(
@@ -59,9 +60,23 @@ function App() {
     return <Home onStart={() => setStarted(true)} />;
   }
 
+  // Show RulesQuiz when "rules" module active
+  if (activeModule === "rules") {
+    return (
+      <div style={{ padding: "20px", backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
+        <h2>{modules.find((m) => m.key === activeModule).title}</h2>
+        <RulesQuiz onComplete={(xpGained) => handleCompleteModule(activeModule, xpGained)} />
+        <button onClick={() => setActiveModule(null)} style={{ marginTop: 20 }}>
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  // Show DecisionQuiz when "decision-making" active
   if (activeModule === "decision-making") {
     return (
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: "20px", backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
         <h2>{modules.find((m) => m.key === activeModule).title}</h2>
         <DecisionQuiz onComplete={() => handleCompleteModule(activeModule, 60)} />
         <button onClick={() => setActiveModule(null)} style={{ marginTop: 20 }}>
@@ -71,7 +86,7 @@ function App() {
     );
   }
 
-  // For now, other modules can just mark complete immediately when started
+  // Other modules just mark complete (like storytelling for now)
   if (activeModule) {
     return (
       <div style={{ padding: "20px" }}>
@@ -87,7 +102,7 @@ function App() {
     );
   }
 
-  // Default: show dashboard with modules
+  // Default: dashboard with all modules
   return (
     <div style={{ padding: "20px" }}>
       <h2>Module Dashboard</h2>
