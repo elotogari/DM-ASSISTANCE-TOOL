@@ -9,11 +9,19 @@ import ScenarioWalkthrough from "./components/ScenarioWalkthrough";
 import StorytellingQuest from "./components/StorytellingQuest";
 
 function App() {
+  // State to track if user has started the app
   const [started, setStarted] = useState(false);
+
+  // State to track user's XP points
   const [xp, setXp] = useState(0);
+
+  // State to track which modules have been completed
   const [completedModules, setCompletedModules] = useState({});
+
+  // State to track which module is currently active/open
   const [activeModule, setActiveModule] = useState(null);
 
+  // List of available modules with their keys, titles, descriptions, and XP rewards
   const modules = [
     {
       key: "storytelling",
@@ -41,6 +49,7 @@ function App() {
     },
   ];
 
+  // On component mount, load saved XP and completed modules from localStorage
   useEffect(() => {
     const savedXp = parseInt(localStorage.getItem("xp"), 10) || 0;
     const savedModules = JSON.parse(localStorage.getItem("completedModules")) || {};
@@ -48,11 +57,16 @@ function App() {
     setCompletedModules(savedModules);
   }, []);
 
+  // Save XP and completed modules to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("xp", xp);
     localStorage.setItem("completedModules", JSON.stringify(completedModules));
   }, [xp, completedModules]);
 
+  // Function to handle completing a module:
+  // - Marks the module completed if not already done
+  // - Adds XP reward to total XP
+  // - Closes the active module view
   const handleCompleteModule = (key, xpGained) => {
     if (!completedModules[key]) {
       setCompletedModules((prev) => ({ ...prev, [key]: true }));
@@ -61,16 +75,19 @@ function App() {
     setActiveModule(null);
   };
 
+  // Calculate the user's progress as a percentage of modules completed
   const progress = Math.round(
     (Object.keys(completedModules).filter((key) => completedModules[key]).length / modules.length) * 100
   );
 
+  // Basic container styling used throughout the app
   const containerStyle = {
     padding: "20px",
     maxWidth: "600px",
     margin: "0 auto",
   };
 
+  // If app hasn't started yet, show the Home component with a start button
   if (!started) {
     return (
       <div style={containerStyle}>
@@ -79,6 +96,7 @@ function App() {
     );
   }
 
+  // Show StorytellingQuest module if active
   if (activeModule === "storytelling") {
     const moduleData = modules.find((m) => m.key === "storytelling");
 
@@ -94,6 +112,7 @@ function App() {
     );
   }
 
+  // Show Quiz component for rules or decision-making modules
   if (activeModule === "rules" || activeModule === "decision-making") {
     const moduleData = modules.find((m) => m.key === activeModule);
     const questions = activeModule === "rules" ? rulesQuestions : decisionQuestions;
@@ -111,6 +130,7 @@ function App() {
     );
   }
 
+  // Show ScenarioWalkthrough module if active
   if (activeModule === "scenario") {
     const moduleData = modules.find((m) => m.key === "scenario");
 
@@ -126,6 +146,7 @@ function App() {
     );
   }
 
+  // For any other active module (not yet implemented), show a placeholder message
   if (activeModule) {
     const moduleData = modules.find((m) => m.key === activeModule);
 
@@ -143,12 +164,15 @@ function App() {
     );
   }
 
-  // Module Dashboard
+  // Default view: show the dashboard with XP, progress bar, and module cards
   return (
     <div style={containerStyle}>
       <h2>Module Dashboard</h2>
+
+      {/* Display current XP */}
       <XPTracker xp={xp} />
 
+      {/* Progress bar showing completion percentage */}
       <div style={{ margin: "20px 0" }}>
         <div style={{ background: "#eee", borderRadius: "999px", overflow: "hidden" }}>
           <div
@@ -168,6 +192,7 @@ function App() {
         </div>
       </div>
 
+      {/* List of modules with ModuleCard components */}
       {modules.map((mod) => (
         <ModuleCard
           key={mod.key}

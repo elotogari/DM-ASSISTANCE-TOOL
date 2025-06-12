@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+// Common styles for container and buttons
 const containerStyle = {
   backgroundColor: "#f9fafb",
   color: "#333",
@@ -33,6 +34,7 @@ const secondaryButtonStyle = {
   marginLeft: "10px",
 };
 
+// Reusable text input component with styling
 const TextInput = ({ value, onChange, placeholder, style }) => (
   <input
     value={value}
@@ -54,6 +56,7 @@ const TextInput = ({ value, onChange, placeholder, style }) => (
   />
 );
 
+// Reusable textarea input component with styling
 const TextAreaInput = ({ value, onChange, placeholder, rows = 4, style }) => (
   <textarea
     value={value}
@@ -76,6 +79,7 @@ const TextAreaInput = ({ value, onChange, placeholder, rows = 4, style }) => (
   />
 );
 
+// Styles for trait checkboxes and labels
 const traitLabelStyle = {
   display: "inline-flex",
   alignItems: "center",
@@ -89,19 +93,23 @@ const traitCheckboxStyle = {
   marginRight: "6px",
 };
 
+// Task component: Create a Villain with name, motivation, and personality traits
 const CreateVillainTask = ({ onComplete }) => {
   const [name, setName] = useState("");
   const [motivation, setMotivation] = useState("");
   const [traits, setTraits] = useState([]);
 
+  // List of traits user can select
   const possibleTraits = ["Cunning", "Greedy", "Vengeful", "Charismatic"];
 
+  // Add/remove trait from selection
   const toggleTrait = (trait) => {
     setTraits((prev) =>
       prev.includes(trait) ? prev.filter((t) => t !== trait) : [...prev, trait]
     );
   };
 
+  // Validate input and call onComplete with villain data
   const handleSubmit = () => {
     if (!name.trim() || !motivation.trim()) {
       alert("Please fill in villain name and motivation.");
@@ -144,9 +152,11 @@ const CreateVillainTask = ({ onComplete }) => {
   );
 };
 
+// Task component: Design a Setting description
 const DesignSettingTask = ({ onComplete }) => {
   const [setting, setSetting] = useState("");
 
+  // Validate and submit setting text
   const handleSubmit = () => {
     if (!setting.trim()) {
       alert("Please describe your setting.");
@@ -170,9 +180,11 @@ const DesignSettingTask = ({ onComplete }) => {
   );
 };
 
+// Task component: Write a Conflict description
 const WriteConflictTask = ({ onComplete }) => {
   const [conflict, setConflict] = useState("");
 
+  // Validate and submit conflict text
   const handleSubmit = () => {
     if (!conflict.trim()) {
       alert("Please describe the conflict.");
@@ -196,28 +208,35 @@ const WriteConflictTask = ({ onComplete }) => {
   );
 };
 
+// Main storytelling quest component that sequences the above tasks
 const StorytellingQuest = ({ onComplete, onCancel, xpReward }) => {
+  // List of tasks and their components in order
   const tasks = [
     { key: "villain", title: "Create a Villain", component: CreateVillainTask },
     { key: "setting", title: "Design a Setting", component: DesignSettingTask },
     { key: "conflict", title: "Write a Conflict", component: WriteConflictTask },
   ];
 
+  // Track which task is active and collected task data
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [taskData, setTaskData] = useState({});
 
+  // Get the current task component to render
   const CurrentTaskComponent = tasks[currentTaskIndex]?.component;
 
+  // When a task is completed, save its data and move to next or finish
   const handleTaskComplete = (data) => {
     setTaskData((prev) => ({ ...prev, [tasks[currentTaskIndex].key]: data }));
 
     if (currentTaskIndex + 1 < tasks.length) {
       setCurrentTaskIndex(currentTaskIndex + 1);
     } else {
+      // All tasks done
       setCurrentTaskIndex(tasks.length);
     }
   };
 
+  // Show summary when all tasks are completed
   if (currentTaskIndex === tasks.length) {
     return (
       <div style={containerStyle}>
@@ -260,6 +279,7 @@ const StorytellingQuest = ({ onComplete, onCancel, xpReward }) => {
 
         <button
           onClick={() => {
+            // Restart quest by resetting state
             setCurrentTaskIndex(0);
             setTaskData({});
           }}
@@ -271,6 +291,7 @@ const StorytellingQuest = ({ onComplete, onCancel, xpReward }) => {
     );
   }
 
+  // Show current task component with cancel button
   return (
     <div style={containerStyle}>
       <h3>{tasks[currentTaskIndex].title}</h3>
