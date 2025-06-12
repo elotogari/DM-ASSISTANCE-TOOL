@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Home from "./components/Home";
 import XPTracker from "./components/XPTracker";
 import ModuleCard from "./components/ModuleCard";
-import DecisionQuiz from "./components/DecisionQuiz";
-import RulesQuiz from "./components/RulesQuiz";  // <- Import RulesQuiz here
+import Quiz from "./components/shared/Quiz"; // ✅ New unified quiz component
+import decisionQuestions from "./data/decisionQuestions"; // ✅ Question data
+import rulesQuestions from "./data/rulesQuestions"; // ✅ Question data
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -56,40 +57,33 @@ function App() {
     (Object.keys(completedModules).filter((key) => completedModules[key]).length / modules.length) * 100
   );
 
+  // <-- HERE is the console log
+  console.log("Started:", started, "Active Module:", activeModule);
+
   if (!started) {
     return <Home onStart={() => setStarted(true)} />;
   }
 
-  // Show RulesQuiz when "rules" module active
-  if (activeModule === "rules") {
+  // ✅ Render quiz modules using unified <Quiz />
+  if (activeModule === "rules" || activeModule === "decision-making") {
+    const moduleData = modules.find((m) => m.key === activeModule);
+    const questions =
+      activeModule === "rules" ? rulesQuestions : decisionQuestions;
+
     return (
       <div style={{ padding: "20px", backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
-        <h2>{modules.find((m) => m.key === activeModule).title}</h2>
-        <RulesQuiz
+        <h2>{moduleData.title}</h2>
+        <Quiz
+          questions={questions}
+          xpReward={moduleData.xp}
           onComplete={(xpGained) => handleCompleteModule(activeModule, xpGained)}
-          onCancel={() => setActiveModule(null)}  // Added onCancel here
+          onCancel={() => setActiveModule(null)}
         />
-        <button onClick={() => setActiveModule(null)} style={{ marginTop: 20 }}>
-          Back to Dashboard
-        </button>
       </div>
     );
   }
 
-  // Show DecisionQuiz when "decision-making" active
-  if (activeModule === "decision-making") {
-    return (
-      <div style={{ padding: "20px", backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
-        <h2>{modules.find((m) => m.key === activeModule).title}</h2>
-        <DecisionQuiz onComplete={() => handleCompleteModule(activeModule, 60)} />
-        <button onClick={() => setActiveModule(null)} style={{ marginTop: 20 }}>
-          Back to Dashboard
-        </button>
-      </div>
-    );
-  }
-
-  // Other modules just mark complete (like storytelling for now)
+  // Placeholder for non-quiz modules
   if (activeModule) {
     return (
       <div style={{ padding: "20px" }}>
@@ -107,7 +101,7 @@ function App() {
     );
   }
 
-  // Default: dashboard with all modules
+  // Main dashboard
   return (
     <div style={{ padding: "20px" }}>
       <h2>Module Dashboard</h2>
