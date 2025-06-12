@@ -65,7 +65,10 @@ function App() {
     return (
       <div style={{ padding: "20px", backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
         <h2>{modules.find((m) => m.key === activeModule).title}</h2>
-        <RulesQuiz onComplete={(xpGained) => handleCompleteModule(activeModule, xpGained)} />
+        <RulesQuiz
+          onComplete={(xpGained) => handleCompleteModule(activeModule, xpGained)}
+          onCancel={() => setActiveModule(null)}  // Added onCancel here
+        />
         <button onClick={() => setActiveModule(null)} style={{ marginTop: 20 }}>
           Back to Dashboard
         </button>
@@ -92,7 +95,9 @@ function App() {
       <div style={{ padding: "20px" }}>
         <h2>{modules.find((m) => m.key === activeModule).title}</h2>
         <p>This module is under construction.</p>
-        <button onClick={() => handleCompleteModule(activeModule, modules.find((m) => m.key === activeModule).xp)}>
+        <button
+          onClick={() => handleCompleteModule(activeModule, modules.find((m) => m.key === activeModule).xp)}
+        >
           Mark as Complete
         </button>
         <button onClick={() => setActiveModule(null)} style={{ marginLeft: 10 }}>
