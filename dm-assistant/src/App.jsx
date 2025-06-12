@@ -5,8 +5,7 @@ import ModuleCard from "./components/ModuleCard";
 import Quiz from "./components/shared/Quiz";
 import decisionQuestions from "./data/decisionQuestions";
 import rulesQuestions from "./data/rulesQuestions";
-
-// NEW import for storytelling quest
+import ScenarioWalkthrough from "./components/ScenarioWalkthrough";
 import StorytellingQuest from "./components/StorytellingQuest";
 
 function App() {
@@ -34,10 +33,16 @@ function App() {
       description: "Test your quick thinking and conflict resolution skills.",
       xp: 60,
     },
+    {
+      key: "scenario",
+      title: "Scenario Walkthrough",
+      description: "Navigate a story-driven scenario with meaningful choices.",
+      xp: 70,
+    },
   ];
 
   useEffect(() => {
-    const savedXp = parseInt(localStorage.getItem("xp")) || 0;
+    const savedXp = parseInt(localStorage.getItem("xp"), 10) || 0;
     const savedModules = JSON.parse(localStorage.getItem("completedModules")) || {};
     setXp(savedXp);
     setCompletedModules(savedModules);
@@ -74,7 +79,21 @@ function App() {
     );
   }
 
-  // Existing quiz modules condition
+  if (activeModule === "storytelling") {
+    const moduleData = modules.find((m) => m.key === "storytelling");
+
+    return (
+      <div style={containerStyle}>
+        <h2>{moduleData.title}</h2>
+        <StorytellingQuest
+          xpReward={moduleData.xp}
+          onComplete={(xpGained) => handleCompleteModule("storytelling", xpGained)}
+          onCancel={() => setActiveModule(null)}
+        />
+      </div>
+    );
+  }
+
   if (activeModule === "rules" || activeModule === "decision-making") {
     const moduleData = modules.find((m) => m.key === activeModule);
     const questions = activeModule === "rules" ? rulesQuestions : decisionQuestions;
@@ -92,23 +111,21 @@ function App() {
     );
   }
 
-  // NEW condition for storytelling quest module
-  if (activeModule === "storytelling") {
-    const moduleData = modules.find((m) => m.key === "storytelling");
+  if (activeModule === "scenario") {
+    const moduleData = modules.find((m) => m.key === "scenario");
 
     return (
       <div style={containerStyle}>
         <h2>{moduleData.title}</h2>
-        <StorytellingQuest
+        <ScenarioWalkthrough
           xpReward={moduleData.xp}
-          onComplete={(xpGained) => handleCompleteModule("storytelling", xpGained)}
+          onComplete={(xpGained) => handleCompleteModule("scenario", xpGained)}
           onCancel={() => setActiveModule(null)}
         />
       </div>
     );
   }
 
-  // Default fallback for modules under construction (if any)
   if (activeModule) {
     const moduleData = modules.find((m) => m.key === activeModule);
 
