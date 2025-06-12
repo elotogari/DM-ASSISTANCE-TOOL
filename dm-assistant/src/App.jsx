@@ -57,16 +57,26 @@ function App() {
     (Object.keys(completedModules).filter((key) => completedModules[key]).length / modules.length) * 100
   );
 
-  if (!started) {
-    return <Home onStart={() => setStarted(true)} />;
-  }
+  const containerStyle = {
+  padding: "20px",
+  maxWidth: "600px",
+  margin: "0 auto",
+};
+
+if (!started) {
+  return (
+    <div style={containerStyle}>
+      <Home onStart={() => setStarted(true)} />
+    </div>
+  );
+}
 
   if (activeModule === "rules" || activeModule === "decision-making") {
     const moduleData = modules.find((m) => m.key === activeModule);
     const questions = activeModule === "rules" ? rulesQuestions : decisionQuestions;
 
     return (
-      <div style={{ padding: "20px", backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
+      <div style={{ ...containerStyle, backgroundColor: "#f9fafb", color: "#333", borderRadius: "8px" }}>
         <h2>{moduleData.title}</h2>
         <Quiz
           questions={questions}
@@ -82,7 +92,7 @@ function App() {
     const moduleData = modules.find((m) => m.key === activeModule);
 
     return (
-      <div style={{ padding: "20px" }}>
+      <div style={containerStyle}>
         <h2>{moduleData.title}</h2>
         <p>This module is under construction.</p>
         <button onClick={() => handleCompleteModule(activeModule, moduleData.xp)}>
@@ -96,7 +106,7 @@ function App() {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={containerStyle}>
       <h2>Module Dashboard</h2>
       <XPTracker xp={xp} />
 
@@ -114,9 +124,7 @@ function App() {
               boxShadow: "inset 0 1px 3px rgba(0,0,0,0.3)",
             }}
           >
-            <span style={{ whiteSpace: "nowrap" }}>
-              {progress}% Complete
-            </span>
+            <span style={{ whiteSpace: "nowrap" }}>{progress}% Complete</span>
           </div>
         </div>
       </div>
