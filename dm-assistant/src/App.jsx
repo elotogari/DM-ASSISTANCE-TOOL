@@ -6,6 +6,9 @@ import Quiz from "./components/shared/Quiz";
 import decisionQuestions from "./data/decisionQuestions";
 import rulesQuestions from "./data/rulesQuestions";
 
+// NEW import for storytelling quest
+import StorytellingQuest from "./components/StorytellingQuest";
+
 function App() {
   const [started, setStarted] = useState(false);
   const [xp, setXp] = useState(0);
@@ -58,19 +61,20 @@ function App() {
   );
 
   const containerStyle = {
-  padding: "20px",
-  maxWidth: "600px",
-  margin: "0 auto",
-};
+    padding: "20px",
+    maxWidth: "600px",
+    margin: "0 auto",
+  };
 
-if (!started) {
-  return (
-    <div style={containerStyle}>
-      <Home onStart={() => setStarted(true)} />
-    </div>
-  );
-}
+  if (!started) {
+    return (
+      <div style={containerStyle}>
+        <Home onStart={() => setStarted(true)} />
+      </div>
+    );
+  }
 
+  // Existing quiz modules condition
   if (activeModule === "rules" || activeModule === "decision-making") {
     const moduleData = modules.find((m) => m.key === activeModule);
     const questions = activeModule === "rules" ? rulesQuestions : decisionQuestions;
@@ -88,6 +92,20 @@ if (!started) {
     );
   }
 
+  // NEW condition for storytelling quest module
+  if (activeModule === "storytelling") {
+    const moduleData = modules.find((m) => m.key === "storytelling");
+
+    return (
+      <div style={containerStyle}>
+        <StorytellingQuest
+          onComplete={(xpGained) => handleCompleteModule("storytelling", xpGained)}
+        />
+      </div>
+    );
+  }
+
+  // Default fallback for modules under construction (if any)
   if (activeModule) {
     const moduleData = modules.find((m) => m.key === activeModule);
 
@@ -105,6 +123,7 @@ if (!started) {
     );
   }
 
+  // Module Dashboard
   return (
     <div style={containerStyle}>
       <h2>Module Dashboard</h2>
