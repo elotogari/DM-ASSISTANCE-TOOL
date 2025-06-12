@@ -98,8 +98,11 @@ function App() {
 
     return (
       <div style={containerStyle}>
+        <h2>{moduleData.title}</h2>
         <StorytellingQuest
+          xpReward={moduleData.xp}
           onComplete={(xpGained) => handleCompleteModule("storytelling", xpGained)}
+          onCancel={() => setActiveModule(null)}
         />
       </div>
     );
